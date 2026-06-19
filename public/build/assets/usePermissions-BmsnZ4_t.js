@@ -1,0 +1,1 @@
+import{b as i}from"./app-X_nL3S-5.js";function l(){const{permissions:s=[],userRole:n=null}=i().props;return{can:e=>n==="admin"?!0:s?.includes(e)??!1,canAny:e=>n==="admin"?!0:e.some(r=>s?.includes(r)??!1),canAll:e=>n==="admin"?!0:e.every(r=>s?.includes(r)??!1),isAdmin:()=>n==="admin",permissions:s,userRole:n}}export{l as u};

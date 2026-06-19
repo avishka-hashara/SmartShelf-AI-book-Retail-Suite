@@ -1,0 +1,1 @@
+import{j as a}from"./app-X_nL3S-5.js";function s({className:r="",disabled:t,children:o,...n}){return a.jsx("button",{...n,className:`btn-primary ${t&&"opacity-25"} `+r,disabled:t,children:o})}export{s as P};

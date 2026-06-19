@@ -1,0 +1,24 @@
+*.log
+.DS_Store
+.env
+.env.backup
+.phpactor.json
+.phpunit.result.cache
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/node_modules
+# Track compiled frontend assets for cPanel deploys (no npm on server)
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+!public/build/
+Homestead.json
+Homestead.yaml
+Thumbs.db

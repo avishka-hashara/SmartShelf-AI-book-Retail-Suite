@@ -1,0 +1,72 @@
+
+   FAIL  Tests\Unit\ReadingSessionServiceTest
+  ✓ 30 minutes billed as half hour                0.21s  
+  ✓ 31 minutes billed as one hour                 0.01s  
+  ✓ 60 minutes billed as one hour                 0.01s  
+  ✓ 61 minutes billed as one and half hours       0.01s  
+  ✓ 90 minutes billed as one and half hours       0.01s  
+  ✓ 91 minutes billed as two hours                0.01s  
+  ✓ 105 minutes billed as two hours               0.01s  
+  ✓ 1 minute billed as half hour                  0.01s  
+  ✓ check in creates active session               0.01s  
+  ✓ check out completes session                   0.01s  
+  ⨯ check out calculates correct duration         0.02s  
+  ✓ daily summary returns correct totals          0.01s  
+
+   FAIL  Tests\Feature\ReadingSessionApiTest
+  ✓ checkin api returns 201 with session          0.05s  
+  ⨯ checkout api returns completed session with…  0.01s  
+  ⨯ live amount api returns running total         0.01s  
+  ✓ active sessions api returns only active       0.02s  
+  ✓ anonymous checkin allowed                     0.01s  
+  ─────────────────────────────────────────────────────  
+   FAILED  Tests\Unit\ReadingSessionServiceTest > che…   
+  Failed asserting that 45.01102648333334 matches expected 45.
+
+  at tests\Unit\ReadingSessionServiceTest.php:141
+    137▕         $session = $this->createSession(45);
+    138▕ 
+    139▕         $completed = $this->service->checkOut($session->id, 'cash');
+    140▕ 
+  ➜ 141▕         $this->assertEquals(45, $completed->duration_minutes);
+    142▕     }
+    143▕ 
+    144▕     public function test_daily_summary_returns_correct_totals()
+    145▕     {
+
+  1   tests\Unit\ReadingSessionServiceTest.php:141
+
+  ─────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\ReadingSessionApiTest > chec…   
+  Failed asserting that '525.00' is identical to 525.
+
+  at tests\Feature\ReadingSessionApiTest.php:53
+     49▕         ]);
+     50▕ 
+     51▕         $response->assertStatus(200)
+     52▕             ->assertJsonPath('status', 'completed')
+  ➜  53▕             ->assertJsonPath('total_amount', 525)
+     54▕             ->assertJsonPath('billed_units', 1.5)
+     55▕             ->assertJsonPath('payment_method', 'card');
+     56▕     }
+     57▕
+
+  ─────────────────────────────────────────────────────  
+   FAILED  Tests\Feature\ReadingSessionApiTest > live…   
+  Failed asserting that 35.01277253333333 is identical to 35.
+
+  at tests\Feature\ReadingSessionApiTest.php:72
+     68▕ 
+     69▕         $response = $this->actingAs($this->user)->getJson("/api/reading/sessions/{$session->id}/live");
+     70▕ 
+     71▕         $response->assertStatus(200)
+  ➜  72▕             ->assertJsonPath('minutes_elapsed', 35)
+     73▕             ->assertJsonPath('billed_units', 1.0)
+     74▕             ->assertJsonPath('running_total', 350);
+     75▕     }
+     76▕
+
+
+  Tests:    3 failed, 14 passed (44 assertions)
+  Duration: 0.59s
+
