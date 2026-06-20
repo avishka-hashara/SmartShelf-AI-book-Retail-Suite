@@ -169,5 +169,5 @@ The header contains a breadcrumb path on the left and user/utility controls on t
 ### Segmented Controls (Toggle Tabs)
 Used for time-filtering (Today, Week, Month). These should be pill-shaped with a white background and a high-contrast active state that matches the primary theme color.
 
-### Data Tables
+Data Tables
 Tables should be minimalist with no vertical borders. Use light gray horizontal dividers (1px) and ensure the "Header" row uses the `Label-Bold` typography style.
