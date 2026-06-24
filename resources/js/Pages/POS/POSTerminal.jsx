@@ -1181,6 +1181,9 @@ const ReceiptPreview = ({ order, settings = {} }) => {
 
             <div className="space-y-2 text-center text-[11px] font-semibold text-slate-500">
                 <p>{settings.receipt_footer || 'Thank you for shopping with us.'}</p>
+                {order.ai_receipt_message && (
+                    <p className="text-center italic text-gray-500 text-sm mt-2">{order.ai_receipt_message}</p>
+                )}
                 {(settings.receipt_show_website && settings.website) && <p>{settings.website}</p>}
                 {(settings.receipt_show_instagram && settings.instagram) && <p>{settings.instagram}</p>}
                 {(settings.receipt_show_whatsapp && settings.whatsapp) && <p>{settings.whatsapp}</p>}
@@ -1742,8 +1745,9 @@ export default function POSTerminal({ auth, products = [], customers = [], categ
 
         // ── Save the completed order to the Sales table ──
         // Failures are non-blocking — the receipt is still shown even if this call fails.
+        let aiMessage = null;
         try {
-            await fetch('/sales', {
+            const res = await fetch('/sales', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1752,6 +1756,10 @@ export default function POSTerminal({ auth, products = [], customers = [], categ
                 },
                 body: JSON.stringify(payload),
             });
+            if (res.ok) {
+                const data = await res.json();
+                aiMessage = data.ai_receipt_message || null;
+            }
         } catch (err) {
             // Log but don't block the receipt — cashier can see the sale was made
             console.error('Failed to save order to sales:', err);
@@ -1772,6 +1780,7 @@ export default function POSTerminal({ auth, products = [], customers = [], categ
             isSplitPayment,
             splitPayments,
             createdAt: new Date().toISOString(),
+            ai_receipt_message: aiMessage,
         });
     };
 
