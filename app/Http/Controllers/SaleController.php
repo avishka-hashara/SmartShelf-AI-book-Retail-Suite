@@ -11,14 +11,19 @@ use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Requests\StoreReturnRequest;
 use App\Http\Requests\UpdateReturnRequest;
 use App\Services\ProductService;
+use App\Services\AI\OpenRouterService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class SaleController extends Controller
 {
-    public function __construct(private readonly ProductService $productService)
-    {
+    public function __construct(
+        private readonly ProductService $productService,
+        private readonly OpenRouterService $ai,
+    ) {
     }
     /**
      * Display the Sales & Orders page with all orders, returns, and customers.
@@ -51,7 +56,7 @@ class SaleController extends Controller
     /**
      * Create a new order with its line items.
      */
-    public function store(StoreOrderRequest $request): RedirectResponse
+    public function store(StoreOrderRequest $request): RedirectResponse|JsonResponse
     {
         $v = $request->validated();
 
@@ -117,13 +122,36 @@ class SaleController extends Controller
         }
 
         // Update customer stats if linked and completed
+        $freshCustomer = null;
         if ($customerId && $v['status'] === 'Completed') {
-            $customer = Customer::find($customerId);
-            if ($customer) {
-                $customer->increment('orders');
-                $customer->increment('total_purchases', $total);
-                $customer->update(['last_visit' => now()->toDateString()]);
+            $freshCustomer = Customer::find($customerId);
+            if ($freshCustomer) {
+                $freshCustomer->increment('orders');
+                $freshCustomer->increment('total_purchases', $total);
+                $freshCustomer->update(['last_visit' => now()->toDateString()]);
+                $freshCustomer->refresh();
             }
+        }
+
+        // Generate AI receipt message for identified customers (cached per customer per day)
+        $aiReceiptMessage = null;
+        if ($freshCustomer && $v['status'] === 'Completed') {
+            $cacheKey = "receipt_msg_{$freshCustomer->id}_" . now()->format('Y-m-d');
+            $aiReceiptMessage = Cache::remember($cacheKey, now()->endOfDay(), function () use ($freshCustomer, $total) {
+                $result = $this->ai->chat(
+                    "Generate a single warm, personalized receipt message for a retail store customer. Maximum 15 words. No quotes. Friendly tone.",
+                    "Customer name: {$freshCustomer->name}, Loyalty points balance: {$freshCustomer->loyalty_pts}, Total visits: {$freshCustomer->orders}, Today's purchase: LKR {$total}. Write one short receipt message."
+                );
+                return $result ?: "Thank you for shopping with us, {$freshCustomer->name}!";
+            });
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success'            => true,
+                'order_number'       => $order->order_number,
+                'ai_receipt_message' => $aiReceiptMessage,
+            ]);
         }
 
         return back()->with('success', "Order {$order->order_number} created successfully!");
