@@ -163,8 +163,6 @@ The centerpiece of the system. These must feature a vibrant linear gradient back
 ### Sidebar
 The sidebar is white with a subtle right-border. Active items should feature a light tint of the Primary color (Orange) and a bolded font weight. Icons in the sidebar should be line-art style with a 2px stroke.
 
-### Header & Navigation
-The header contains a breadcrumb path on the left and user/utility controls on the right. Buttons in the header should be "Ghost" style (outline or no border) unless they are the primary action.
 
 ### Segmented Controls (Toggle Tabs)
 Used for time-filtering (Today, Week, Month). These should be pill-shaped with a white background and a high-contrast active state that matches the primary theme color.
