@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ReportChart from '../components/ReportChart';
 import ReportTable from '../components/ReportTable';
+import AIInsightPanel from '../components/AIInsightPanel';
 import { useReportData } from '../hooks/useReportData';
 import { useCurrency } from '@/hooks/useCurrency';
 import { BarChart3, PieChart, Tag, Package, CreditCard, ChevronDown } from 'lucide-react';
@@ -18,6 +19,9 @@ const SalesReports = ({ filters }) => {
 
     return (
         <div className="flex flex-col gap-6">
+            {/* AI Narrative */}
+            <AIInsightPanel section="sales" filters={filters} />
+
             {/* Sub-navigation */}
             <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 w-fit">
                 {subTabs.map(tab => (

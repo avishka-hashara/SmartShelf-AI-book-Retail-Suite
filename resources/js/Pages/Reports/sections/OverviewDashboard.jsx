@@ -2,6 +2,7 @@ import React from 'react';
 import KPICard from '../components/KPICard';
 import ReportChart from '../components/ReportChart';
 import ReportTable from '../components/ReportTable';
+import AIInsightPanel from '../components/AIInsightPanel';
 import { useReportData } from '../hooks/useReportData';
 import { useCurrency } from '@/hooks/useCurrency';
 import { AlertTriangle, UserCheck } from 'lucide-react';
@@ -27,6 +28,9 @@ const OverviewDashboard = ({ filters }) => {
                 <KPICard title="Avg Order Value" value={data?.kpis?.aov ?? 0} change={data?.kpis?.aov_change} loading={loading} />
                 <KPICard title="Transactions" value={data?.kpis?.transactions ?? 0} isCurrency={false} prefix="" change={data?.kpis?.transactions_change} loading={loading} />
             </div>
+
+            {/* AI Narrative */}
+            <AIInsightPanel section="overview" filters={filters} />
 
             {/* Main Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

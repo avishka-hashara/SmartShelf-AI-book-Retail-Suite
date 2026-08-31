@@ -1,6 +1,7 @@
 import React from 'react';
 import ReportChart from '../components/ReportChart';
 import ReportTable from '../components/ReportTable';
+import AIInsightPanel from '../components/AIInsightPanel';
 import { useReportData } from '../hooks/useReportData';
 import KPICard from '../components/KPICard';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -13,6 +14,9 @@ const CustomerReports = ({ filters }) => {
 
     return (
         <div className="space-y-6">
+            {/* AI Narrative */}
+            <AIInsightPanel section="customers" filters={filters} />
+
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <KPICard title="Total Members" value={loyaltyData?.kpis?.total_members ?? 0} isCurrency={false} prefix="" loading={loyaltyLoading} />
                 <KPICard title="Active Members" value={loyaltyData?.kpis?.active_members ?? 0} isCurrency={false} prefix="" loading={loyaltyLoading} />

@@ -21,6 +21,7 @@ use App\Http\Controllers\Reports\InventoryReportController;
 use App\Http\Controllers\Reports\CustomerReportController;
 use App\Http\Controllers\Reports\EmployeeReportController;
 use App\Http\Controllers\Reports\ExportController;
+use App\Http\Controllers\Reports\AiNarrativeController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -218,6 +219,7 @@ Route::prefix('library')->name('library.')->group(function () {
                 );
 
                 Route::get('/export/{format}', [ExportController::class , 'export']);
+                Route::post('/ai-narrative', [AiNarrativeController::class , 'generate']);
             }
             );
 
